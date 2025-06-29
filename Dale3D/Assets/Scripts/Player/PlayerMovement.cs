@@ -8,6 +8,8 @@ public class PlayerMovement : MonoBehaviour
 
     public GameObject groundCheck;
     public LayerMask groundLayer;
+    [Space]
+    public GameObject playerModel;
 
     [Header("Shown Stats")]
     public float speed;
@@ -26,12 +28,13 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         canJump = true;
-        rb = GetComponent<Rigidbody>(); 
+        rb = GetComponent<Rigidbody>();
     }
 
     private void Update()
     {
         x = Input.GetAxisRaw("Horizontal");
+        FlipModel();
 
         if (Input.GetButtonDown("Jump") && isGrounded && canJump)
         {
@@ -68,6 +71,21 @@ public class PlayerMovement : MonoBehaviour
 
         if(colliders.Length > 0) return true;
         else return false;
+    }
+
+    private void FlipModel()
+    {
+        if(x > 0)
+        {
+            //playerModel.transform.rotation = Quaternion.Euler(0, -90, 0); INSTANT
+
+            playerModel.transform.rotation = Quaternion.Slerp(playerModel.transform.rotation, Quaternion.Euler(0, -90, 0), 5f * Time.deltaTime);
+        }else if (x < 0)
+        {
+            //playerModel.transform.rotation = Quaternion.Euler(0, 90, 0); INSTANT
+
+            playerModel.transform.rotation = Quaternion.Slerp(playerModel.transform.rotation, Quaternion.Euler(0, 90, 0), 5f * Time.deltaTime);
+        }
     }
     private void OnDrawGizmosSelected()
     {
